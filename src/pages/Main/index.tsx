@@ -8,7 +8,7 @@ export const Main = (): ReturnComponentType => {
     <Layout>
       <div className={style.contentContainer}>
         <NavBar />
-        {/* <Chat /> */}
+        <Chat />
       </div>
     </Layout>
   );

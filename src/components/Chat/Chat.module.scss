@@ -1,0 +1,152 @@
+@import '../../styles/variables.scss';
+
+.chatBlock {
+  transform-origin: left top;
+  flex-grow: 1;
+  position: relative;
+  z-index: 100;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition: background-color 0.3s ease;
+}
+
+.messagesWrapper {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  background-color: $chatBckgrColor;
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  transition: background 0.3s ease-out 0.1s;
+}
+
+.topScreen {
+  flex: 1 1 auto;
+  min-height: 12px;
+}
+
+.messagesBlock {
+  padding-bottom: 8px;
+  flex: 0 0 auto;
+}
+
+.dateWrapper {
+  padding-right: 9%;
+  padding-left: 9%;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  user-select: text;
+}
+
+.dateBadge {
+  margin-bottom: 0;
+  padding: 5px 12px 6px;
+  text-align: center;
+  background-color: $secondaryBckgrColor;
+  border-radius: 7.5px;
+}
+
+.messageWrapper {
+  position: relative;
+  padding-right: 63px;
+  padding-left: 63px;
+  margin-bottom: 12px;
+  user-select: text;
+  display: flex;
+  flex-direction: column;
+}
+
+.messageContainer {
+  margin-bottom: 0;
+  border-radius: 7.5px;
+  max-width: 65%;
+  position: relative;
+  flex: none;
+  font-size: 14.2px;
+  line-height: 19px;
+}
+
+.messageBlock {
+  border-top-left-radius: 0;
+  padding: 7px 7px 12px 7px;
+  user-select: text;
+  border-radius: 7.5px;
+}
+
+.ownerMessage {
+  background-color: $messageBckgrColor;
+}
+.userMessage {
+  background-color: $secondaryBckgrColor;
+}
+
+.messageContent {
+  position: relative;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+  color: $primaryStrongerColor;
+}
+
+.messageDate {
+  margin: -2px 0 -5px 4px;
+  z-index: 10;
+  position: relative;
+  float: right;
+  font-size: 0.6875rem;
+  height: 15px;
+  line-height: 15px;
+}
+
+.endAlignItem {
+  align-items: flex-end;
+}
+
+.startAlignItem {
+  align-items: flex-start;
+}
+
+.footer {
+  width: 100%;
+  min-height: 62px;
+  flex: none;
+  position: relative;
+  background-color: $panelBckgrColor;
+  padding: 5px 16px;
+  display: flex;
+  max-width: 100%;
+}
+
+.inputWrapper {
+  padding: 9px 12px;
+  margin: 5px 8px;
+  background-color: $secondaryBckgrColor;
+  border-radius: 8px;
+  min-height: 20px;
+  font-size: 15px;
+  line-height: 20px;
+  outline: none;
+  will-change: width;
+  display: flex;
+  width: 100%;
+}
+
+.buttonWrapper {
+  padding: 5px 0;
+  width: 40px;
+  min-width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+}
+
+.sendButton {
+  flex: 0 0 auto;
+}

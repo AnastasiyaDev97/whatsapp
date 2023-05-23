@@ -1,5 +1,9 @@
 import { FC, memo, useEffect, useRef, useState } from 'react';
 
+import { Header } from './../Header/index';
+import style from './Chat.module.scss';
+
+import sendButtonIcon from 'assets/sendButton.svg';
 import { ReturnComponentType } from 'types';
 
 export const Chat: FC = () => {
@@ -16,9 +20,10 @@ export const Chat: FC = () => {
   }, []); */
 
   return (
-    <div>
-      {status === 'error' && <div>Some error occured. Please refresh the page</div>}
+    <div className={style.chatBlock}>
       <>
+        {/*  {status === 'error' && <div>Some error occured. Please refresh the page</div>} */}
+        <Header />
         <Messages />
         <AddMessageForm />
       </>
@@ -50,27 +55,40 @@ const Messages: FC = () => {
   }, [messages]); */
 
   return (
-    <div style={{ height: '400px', overflowY: 'auto' }} onScroll={scrollHandler}>
+    <div className={style.messagesWrapper} /* onScroll={scrollHandler} */>
+      <div className={style.topScreen} />
+      <div className={style.messagesBlock}>
+        <Message />
+        <Message />
+        <Message />
+      </div>
       {/* {messages.map((m, index) => (
         <Message key={m.id} message={m} />
       ))} */}
-      <div ref={messagesAnchorRef}></div>
+      {/*  <div ref={messagesAnchorRef}></div> */}
     </div>
   );
 };
 
-// const Message: FC = memo((/* { message } */) => {
-//   return (
-//     <div>
-//       photo
-//       {/* <img src={message.photo} style={{ width: '30px' }} /> <b>{message.userName}</b> */}
-//       <br />
-//       message
-//       {/*  {message.message} */}
-//       <hr />
-//     </div>
-//   );
-// });
+const Message: FC = memo((/* { message } */) => {
+  return (
+    <>
+      <div className={style.dateWrapper}>
+        <div className={style.dateBadge}>
+          <span>45 43 345</span>
+        </div>
+      </div>
+      <div className={`${style.messageWrapper} ${style.endAlignItem}`}>
+        <div className={style.messageContainer}>
+          <div className={`${style.messageBlock} ${style.ownerMessage}`}>
+            <div className={style.messageContent}> Message</div>
+            <div className={style.messageDate}>66 66 66</div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+});
 
 const AddMessageForm: React.FC = (): ReturnComponentType => {
   /*   const [message, setMessage] = useState('');
@@ -87,18 +105,13 @@ const AddMessageForm: React.FC = (): ReturnComponentType => {
   }; */
 
   return (
-    <div>
-      <div>
-        <textarea
-        /*    onChange={e => setMessage(e.currentTarget.value)}
-          value={message} */
-        ></textarea>
-      </div>
-      <div>
-        <button disabled={status !== 'ready'} /* onClick={sendMessageHandler} */>
-          Send
+    <footer className={style.footer}>
+      <input className={style.inputWrapper} placeholder="Type message" />
+      <div className={style.buttonWrapper}>
+        <button className={style.sendButton}>
+          <img src={sendButtonIcon} alt="send button" />
         </button>
       </div>
-    </div>
+    </footer>
   );
 };
