@@ -7,3 +7,6 @@ export { Icon } from './Icon';
 export { ErrorBoundary } from './ErrorBoundary';
 export { Chat } from './Chat';
 export { InfiniteScroll } from './InfiniteScroll';
+export { Header } from './Header';
+export { NavBar } from './NavBar';
+export { Dialogs } from './Dialogs';

@@ -1,4 +1,5 @@
 @import './styles/media';
+@import './styles/variables';
 
 * {
   padding: 0;
@@ -25,15 +26,14 @@ a:active {
 body {
   font-family: Segoe UI, Helvetica Neue, Helvetica, Lucida Grande, Arial, Ubuntu,
     Cantarell, Fira Sans, sans-serif;
-  line-height: 1.5;
   font-weight: 400;
   user-select: none;
   text-rendering: optimizeLegibility;
   font-feature-settings: 'kern';
 
   color-scheme: light dark;
-  /*   color: $primaryTextColor;
-  background-color: $primaryBgColor; */
+  color: $primaryColor;
+  background-color: $primaryBckgrColor;
 
   min-width: 320px;
   min-height: 100vh;
@@ -141,6 +141,7 @@ label {
 
 html {
   font-size: 14px;
+  line-height: 19px;
   /*   @include d-media(xs) {
     font-size: 11px !important;
   } */

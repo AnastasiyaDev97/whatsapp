@@ -1,10 +1,11 @@
-import { ErrorBoundary, Layout } from 'components';
+import { ErrorBoundary } from 'components';
+import { Main } from 'pages';
 import { ReturnComponentType } from 'types/ReturnComponentType';
 
 const App = (): ReturnComponentType => {
   return (
     <ErrorBoundary>
-      <Layout />
+      <Main />
     </ErrorBoundary>
   );
 };
