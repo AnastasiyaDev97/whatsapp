@@ -1,0 +1,28 @@
+@import '../../styles/variables';
+
+.inputWrapper {
+  width: 100%;
+  position: relative;
+  margin-bottom: 35px;
+
+  .input {
+    font-size: inherit;
+    line-height: 26px;
+    box-shadow: 0 0 15px 4px rgb(0 0 0 / 6%);
+    border-radius: 10px;
+    min-width: 200px;
+    border: 1px solid #e7edf2;
+    padding: 1rem 4em 1rem 2rem;
+    width: 100%;
+    color: black;
+
+    &:hover {
+      box-shadow: 0 0 4px rgb(0 0 0 / 50%);
+    }
+
+    &:focus {
+      outline: none;
+      color: black;
+    }
+  }
+}

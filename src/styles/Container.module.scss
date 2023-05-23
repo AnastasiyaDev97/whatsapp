@@ -1,0 +1,17 @@
+@import './media.scss';
+
+.container {
+  width: 100%;
+  max-width: 1600px;
+  padding: 0 12px;
+  margin: 0 auto;
+  position: relative;
+  height: 100%;
+  background-color: aquamarine;
+  /*   @include m-media(sm) {
+    max-width: 443px;
+  }
+  @include m-media(xxxl) {
+    max-width: 862px;
+  } */
+}

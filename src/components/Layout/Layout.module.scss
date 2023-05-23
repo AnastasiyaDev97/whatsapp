@@ -1,0 +1,27 @@
+@import '../../styles/media.scss';
+@import '../../styles/variables.scss';
+
+.layoutContainer {
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.mainBlock {
+  flex: 1 1 auto;
+  min-height: 410px;
+}
+
+/* @include m-media(sm) {
+  .mainBlock {
+    min-height: 386px;
+  }
+}
+
+@include m-media(xxxl) {
+  .mainBlock {
+    min-height: 489px;
+  }
+} */
