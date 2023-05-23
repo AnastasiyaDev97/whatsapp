@@ -1,3 +1,11 @@
-.headerBlock{
-  
+@import '../../styles/variables.scss';
+
+.headerBlock {
+  min-height: 60px;
+  background-color: $panelBckgrColor;
+  width: 100%;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  position: relative;
 }
