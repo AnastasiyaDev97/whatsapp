@@ -12,7 +12,6 @@ import {
 import style from './Chat.module.scss';
 
 import { useGetChatHistoryMutation } from 'api/chatHistory';
-import { getChatHistoryResponseType } from 'api/chatHistory/types';
 import {
   useDeleteNotificationMutation,
   useReceiveNotificationQuery,
@@ -25,7 +24,14 @@ import { setErrorText } from 'store/reducers/app';
 import { Nullable, ReturnComponentType } from 'types';
 
 type MessagesPropsType = {
-  messages: getChatHistoryResponseType[];
+  messages: MessageType[];
+};
+
+type MessageType = {
+  type: 'outgoing' | 'incoming';
+  timestamp: number;
+  idMessage: string;
+  textMessage: string;
 };
 
 export const Chat: FC = () => {
@@ -37,7 +43,8 @@ export const Chat: FC = () => {
 
   const chatId = `${activeChat}@c.us`;
 
-  const [messages, setMessages] = useState<getChatHistoryResponseType[]>([]);
+  const [messages, setMessages] = useState<MessageType[]>([]);
+  const [message, setMessage] = useState('');
 
   const {
     data: notification,
@@ -62,39 +69,29 @@ export const Chat: FC = () => {
     { data: chatHistory, isSuccess: isSuccessChatHistory, isError: isErrorChatHistory },
   ] = useGetChatHistoryMutation();
 
-  const onSendMessageButtonClick = useCallback(
-    async (message: string) => {
-      try {
-        if (activeChat && instanse && token) {
-          await sendMessage({
-            chatId,
-            message,
-            instanse,
-            token,
-          });
-        }
-      } catch (err) {
-        dispatch(setErrorText({ errorText: 'Something went wrong' }));
+  const onSendMessageButtonClick = useCallback(async () => {
+    try {
+      if (activeChat && instanse && token) {
+        await sendMessage({
+          chatId,
+          message,
+          instanse,
+          token,
+        });
+        setMessages(state => [
+          ...state,
+          {
+            type: 'outgoing',
+            timestamp: Math.floor(new Date().getTime() / 1000),
+            idMessage: `${Math.random()}`,
+            textMessage: message,
+          },
+        ]);
       }
-    },
-    [chatId, instanse, token, sendMessage, activeChat, dispatch],
-  );
-
-  useEffect(() => {
-    if (sendMessageData?.idMessage && instanse && token) {
-      setTimeout(() => {
-        getChatHistory({ chatId, instanse, token });
-      }, 1000);
+    } catch (err) {
+      dispatch(setErrorText({ errorText: 'Something went wrong' }));
     }
-  }, [
-    sendMessageData,
-    chatId,
-    instanse,
-    token,
-    getChatHistory,
-    isSuccessReceiveNotification,
-    notification,
-  ]);
+  }, [chatId, instanse, token, sendMessage, activeChat, dispatch, message]);
 
   useEffect(() => {
     if (messages.length === 0 && activeChat && instanse && token) {
@@ -147,7 +144,11 @@ export const Chat: FC = () => {
         {activeChat ? (
           <>
             <Messages messages={messages} />
-            <AddMessageForm onSendMessageButtonClick={onSendMessageButtonClick} />
+            <AddMessageForm
+              onSendMessageButtonClick={onSendMessageButtonClick}
+              setMessage={setMessage}
+              message={message}
+            />
           </>
         ) : null}
       </>
@@ -264,13 +265,15 @@ const Message = memo(
 
 type AddMessageFormType = {
   onSendMessageButtonClick: (message: string) => void;
+  message: string;
+  setMessage: (message: string) => void;
 };
 
 const AddMessageForm = ({
   onSendMessageButtonClick,
+  message,
+  setMessage,
 }: AddMessageFormType): ReturnComponentType => {
-  const [message, setMessage] = useState('');
-
   const onMessageChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setMessage(e.currentTarget.value);
   };

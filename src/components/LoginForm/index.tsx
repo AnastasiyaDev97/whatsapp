@@ -16,6 +16,7 @@ import {
   setUserToken,
 } from 'store/reducers/app';
 import { ReturnComponentType } from 'types';
+import { saveState } from 'utils/localStorage';
 
 export const LoginForm = (): ReturnComponentType => {
   const [fetchStatus] = useLazyGetStateInstanceQuery();
@@ -50,8 +51,11 @@ export const LoginForm = (): ReturnComponentType => {
 
         if (result?.data?.stateInstance === 'authorized') {
           dispatch(setIsAuth(true));
+          saveState('true', 'isAuth');
           dispatch(setUserToken({ userToken: values.token }));
+          saveState(`${values.token}`, 'userToken');
           dispatch(setUserInstanse({ userInstanse: values.instanse }));
+          saveState(`${values.instanse}`, 'userInstanse');
           closeModal();
         } else {
           setErrorText({
