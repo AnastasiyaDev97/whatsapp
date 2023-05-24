@@ -27,14 +27,21 @@
   right: 0px;
 }
 
-/* @include m-media(sm) {
-  .mainBlock {
-    min-height: 386px;
+.defaultError {
+  position: fixed;
+  color: rgb(254 254 255 / 90%);
+  font-size: 1.2rem;
+  left: 15%;
+  transform: translate(-50%, 50%);
+  bottom: 120px;
+  font-weight: 700;
+  padding: 10px 30px;
+  border-radius: 8px;
+  background: rgb(208 41 41 / 30%);
+  @include d-media(xs) {
+    bottom: 70px;
+    z-index: 10000;
+    transform: none;
+    left: 5%;
   }
 }
-
-@include m-media(xxxl) {
-  .mainBlock {
-    min-height: 489px;
-  }
-} */

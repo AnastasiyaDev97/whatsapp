@@ -60,12 +60,9 @@ const Dialog = memo(
         <div className={style.messageBlock}>
           <div className={style.headerMessageBlock}>
             <span className={style.userName}>{userPhone}</span>
-            <span className={style.date}>22.04.1997</span>
           </div>
           <span className={style.messageWrapper}>
-            <span className={style.messageText}>
-              sdfsd dsffsdf eerre er werwer wer werew rewrew rwer werwer erew rwe rwsdfsfs
-            </span>
+            <span className={style.messageText}>Message text</span>
           </span>
         </div>
       </div>

@@ -17,6 +17,9 @@
   display: flex;
   flex-direction: row;
   height: 72px;
+  &:hover {
+    background-color: $primaryBckgrColor;
+  }
 }
 
 .avatarBlock {
@@ -48,7 +51,7 @@
   min-width: 0;
   width: 100%;
   padding-right: 15px;
-  border-top: 1px solid $borderColor;
+  border-top: 1px solid $headerBorderColor;
 }
 
 .headerMessageBlock {
