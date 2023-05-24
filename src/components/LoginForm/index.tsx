@@ -2,6 +2,8 @@ import { useContext } from 'react';
 
 import { useFormik } from 'formik';
 
+import style from './LoginForm.module.scss';
+
 import { useLazyGetStateInstanceQuery } from 'api/auth';
 import { SuperButton, UniversalInput } from 'components';
 import { ModalContext } from 'components/Modal/ModalProvider';
@@ -65,7 +67,7 @@ export const LoginForm = (): ReturnComponentType => {
   });
 
   return (
-    <form onSubmit={formik.handleSubmit}>
+    <form onSubmit={formik.handleSubmit} className={style.formBlock}>
       <UniversalInput
         placeholder="IdInstance"
         validationErr={(formik.touched.instanse && formik.errors.instanse) || ''}
@@ -76,7 +78,7 @@ export const LoginForm = (): ReturnComponentType => {
         validationErr={(formik.touched.token && formik.errors.token) || ''}
         formikProps={formik.getFieldProps('token')}
       />
-      <SuperButton type="submit">Close</SuperButton>
+      <SuperButton type="submit">Login</SuperButton>
     </form>
   );
 };

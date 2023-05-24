@@ -1,10 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
-type ContactType = { number: string; message: 'string' };
-
 const initialState = {
-  contacts: ['375447201120'] as string[],
+  contacts: [] as string[],
 };
 
 type InitialStateType = typeof initialState;
