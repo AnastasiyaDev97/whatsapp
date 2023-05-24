@@ -57,8 +57,12 @@ export const Chat: FC = () => {
       <>
         {/*  {status === 'error' && <div>Some error occured. Please refresh the page</div>} */}
         <Header />
-        <Messages />
-        <AddMessageForm onSendMessageButtonClick={onSendMessageButtonClick} />
+        {activeChat ? (
+          <>
+            <Messages />
+            <AddMessageForm onSendMessageButtonClick={onSendMessageButtonClick} />
+          </>
+        ) : null}
       </>
     </div>
   );
@@ -130,7 +134,7 @@ type AddMessageFormType = {
 const AddMessageForm = ({
   onSendMessageButtonClick,
 }: AddMessageFormType): ReturnComponentType => {
-  const [message, setMessage] = useState('ddd');
+  const [message, setMessage] = useState('');
 
   const onMessageChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setMessage(e.currentTarget.value);
@@ -138,6 +142,7 @@ const AddMessageForm = ({
 
   const onButtonClick = (): void => {
     onSendMessageButtonClick(message);
+    setMessage('');
   };
 
   return (
