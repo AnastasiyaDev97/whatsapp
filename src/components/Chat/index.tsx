@@ -1,4 +1,13 @@
-import { FC, memo, useCallback, useEffect, useRef, useState, ChangeEvent } from 'react';
+import {
+  FC,
+  memo,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  ChangeEvent,
+  KeyboardEvent,
+} from 'react';
 
 import style from './Chat.module.scss';
 
@@ -271,6 +280,12 @@ const AddMessageForm = ({
     setMessage('');
   };
 
+  const onKeyPressSendMessage = (e: KeyboardEvent<HTMLInputElement>): void => {
+    if (e.key === 'Enter') {
+      onButtonClick();
+    }
+  };
+
   return (
     <footer className={style.footer}>
       <input
@@ -278,6 +293,7 @@ const AddMessageForm = ({
         placeholder="Type message"
         onChange={onMessageChange}
         value={message}
+        onKeyPress={onKeyPressSendMessage}
       />
       <div className={style.buttonWrapper}>
         <button className={style.sendButton} onClick={onButtonClick}>
