@@ -24,6 +24,7 @@
     "urijs": "^1.19.11",
     "web-vitals": "^2.1.0"
   },
+  "homepage": "https://AnastasiyaDev97.github.io/whatsapp",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
