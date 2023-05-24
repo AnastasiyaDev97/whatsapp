@@ -3,15 +3,28 @@ import { FC, memo, useCallback, useEffect, useRef, useState, ChangeEvent } from 
 import { Header } from './../Header/index';
 import style from './Chat.module.scss';
 
+import { useGetChatHistoryMutation } from 'api/chatHistory';
+import { getChatHistoryResponseType } from 'api/chatHistory/types';
 import { useReceiveNotificationQuery, useSendMessageMutation } from 'api/message';
 import sendButtonIcon from 'assets/sendButton.svg';
 import { useAppDispatch, useAppSelector } from 'store';
-import { ReturnComponentType } from 'types';
+import { setErrorText } from 'store/reducers/app';
+import { Nullable, ReturnComponentType } from 'types';
+
+type MessagesPropsType = {
+  messages: getChatHistoryResponseType[];
+};
 
 export const Chat: FC = () => {
   const activeChat = useAppSelector(state => state.chat.activeChat);
   const instanse = useAppSelector(state => state.app.userInstanse);
   const token = useAppSelector(state => state.app.userToken);
+
+  const dispatch = useAppDispatch();
+
+  const chatId = `${activeChat}@c.us`;
+
+  const [messages, setMessages] = useState<getChatHistoryResponseType[]>([]);
 
   const {
     data: notification,
@@ -26,25 +39,57 @@ export const Chat: FC = () => {
     /*   { pollingInterval: 10000, skip: !instanse || !token }, */
   );
 
-  const dispatch = useAppDispatch();
+  const [
+    sendMessage,
+    {
+      data: sendMessageData,
+      isLoading: isLoadingSendMessage,
+      isSuccess: isSuccessSendMessage,
+      isError: isErrorSendMessage,
+    },
+  ] = useSendMessageMutation();
 
-  const [sendMessage, { isLoading, isSuccess, isError }] = useSendMessageMutation();
+  const [
+    getChatHistory,
+    {
+      data: chatHistory,
+      isLoading: isLoadingChatHistory,
+      isSuccess: isSuccessChatHistory,
+      isError: isErrorChatHistory,
+    },
+  ] = useGetChatHistoryMutation();
 
   const onSendMessageButtonClick = useCallback(
     async (message: string) => {
-      if (activeChat && instanse && token) {
-        const result = await sendMessage({
-          chatId: `${activeChat}@c.us`,
-          message,
-          instanse,
-          token,
-        });
-
-        console.log(result);
+      try {
+        if (activeChat && instanse && token) {
+          await sendMessage({
+            chatId,
+            message,
+            instanse,
+            token,
+          });
+        }
+      } catch (err) {
+        dispatch(setErrorText({ errorText: 'Something went wrong' }));
       }
     },
-    [activeChat, instanse, token, sendMessage],
+    [chatId, instanse, token, sendMessage, activeChat, dispatch],
   );
+
+  useEffect(() => {
+    if (sendMessageData?.idMessage && instanse && token) {
+      setTimeout(() => {
+        getChatHistory({ chatId, instanse, token });
+      }, 1000);
+    }
+  }, [sendMessageData, chatId, instanse, token, getChatHistory]);
+
+  useEffect(() => {
+    if (messages.length === 0 && activeChat && instanse && token) {
+      getChatHistory({ chatId, instanse, token });
+    }
+  }, [messages, activeChat, instanse, token, chatId, getChatHistory]);
 
   useEffect(() => {
     if (isSuccessReceiveNotification && notification) {
@@ -52,14 +97,19 @@ export const Chat: FC = () => {
     }
   }, [isSuccessReceiveNotification, notification]);
 
+  useEffect(() => {
+    if (isSuccessChatHistory && chatHistory) {
+      setMessages([...chatHistory].reverse());
+    }
+  }, [chatHistory, isSuccessChatHistory]);
+
   return (
     <div className={style.chatBlock}>
       <>
-        {/*  {status === 'error' && <div>Some error occured. Please refresh the page</div>} */}
         <Header />
         {activeChat ? (
           <>
-            <Messages />
+            <Messages messages={messages} />
             <AddMessageForm onSendMessageButtonClick={onSendMessageButtonClick} />
           </>
         ) : null}
@@ -68,10 +118,12 @@ export const Chat: FC = () => {
   );
 };
 
-const Messages: FC = () => {
-  /* const messages = useSelector((state: AppStateType) => state.chat.messages); */
+const Messages = memo(({ messages }: MessagesPropsType): ReturnComponentType => {
   const messagesAnchorRef = useRef<HTMLDivElement>(null);
   const [isAutoScroll, setIsAutoScroll] = useState(true);
+
+  const commonDateOptions = { weekday: 'short', day: 'numeric', month: 'short' } as const;
+  const timeOptions = { hour: 'numeric', minute: 'numeric' } as const;
 
   const scrollHandler = (
     e: React.UIEvent<HTMLDivElement, UIEvent> /* : UIEvent<HTMLDivElement, UIEvent> */,
@@ -85,47 +137,95 @@ const Messages: FC = () => {
     }
   };
 
-  /*   useEffect(() => {
+  useEffect(() => {
     if (isAutoScroll) {
       messagesAnchorRef.current?.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [messages]); */
+  }, [messages, isAutoScroll]);
+
+  let messagesDate: string;
 
   return (
-    <div className={style.messagesWrapper} /* onScroll={scrollHandler} */>
+    <div className={style.messagesWrapper} onScroll={scrollHandler}>
       <div className={style.topScreen} />
       <div className={style.messagesBlock}>
-        <Message />
-        <Message />
-        <Message />
+        {messages?.reverse()?.map(({ idMessage, textMessage, type, timestamp }, i) => {
+          const defaultMessageDate = new Date(timestamp * 1000);
+          const formattedMessageDate = defaultMessageDate?.toLocaleDateString(
+            'en-GB',
+            commonDateOptions,
+          );
+          const formattedMessageTime = defaultMessageDate?.toLocaleTimeString(
+            'en-GB',
+            timeOptions,
+          );
+
+          if (messagesDate !== formattedMessageDate) {
+            messagesDate = formattedMessageDate;
+          }
+
+          const isMessageDateShown = i === 0 || messagesDate !== formattedMessageDate;
+
+          return (
+            <Message
+              key={idMessage}
+              textMessage={textMessage}
+              type={type}
+              formattedMessageDate={isMessageDateShown ? formattedMessageDate : null}
+              formattedMessageTime={formattedMessageTime}
+            />
+          );
+        })}
       </div>
-      {/* {messages.map((m, index) => (
-        <Message key={m.id} message={m} />
-      ))} */}
-      {/*  <div ref={messagesAnchorRef}></div> */}
+
+      <div ref={messagesAnchorRef}></div>
     </div>
   );
+});
+
+type MessagePropsType = {
+  textMessage: string;
+  type: 'outgoing' | 'incoming';
+  formattedMessageDate: Nullable<string>;
+  formattedMessageTime: string;
 };
 
-const Message: FC = memo((/* { message } */) => {
-  return (
-    <>
-      <div className={style.dateWrapper}>
-        <div className={style.dateBadge}>
-          <span>45 43 345</span>
+const Message = memo(
+  ({
+    textMessage,
+    type,
+    formattedMessageDate,
+    formattedMessageTime,
+  }: MessagePropsType) => {
+    const messageWrapperClassName = `${style.messageWrapper} ${
+      type === 'incoming' ? style.startAlignItem : style.endAlignItem
+    }`;
+
+    const messageContentClassName = `${style.messageBlock} ${
+      type === 'incoming' ? style.userMessage : style.ownerMessage
+    }`;
+
+    return (
+      <>
+        <div className={style.dateWrapper}>
+          {formattedMessageDate && (
+            <div className={style.dateBadge}>
+              <span>{formattedMessageDate}</span>
+            </div>
+          )}
         </div>
-      </div>
-      <div className={`${style.messageWrapper} ${style.endAlignItem}`}>
-        <div className={style.messageContainer}>
-          <div className={`${style.messageBlock} ${style.ownerMessage}`}>
-            <div className={style.messageContent}> Message</div>
-            <div className={style.messageDate}>66 66 66</div>
+        <div className={messageWrapperClassName}>
+          <div className={style.messageContainer}>
+            <div className={messageContentClassName}>
+              <div className={style.messageContent}>{textMessage}</div>
+              <div className={style.messageDate}>{formattedMessageTime}</div>
+            </div>
           </div>
         </div>
-      </div>
-    </>
-  );
-});
+      </>
+    );
+  },
+);
 
 type AddMessageFormType = {
   onSendMessageButtonClick: (message: string) => void;

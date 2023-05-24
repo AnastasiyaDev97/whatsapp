@@ -7,7 +7,7 @@ import { ReturnComponentType } from 'types/ReturnComponentType';
 export const Header = (): ReturnComponentType => {
   return (
     <Fragment>
-      <header className={style.headerBlock}>Header</header>
+      <header className={style.headerBlock}></header>
     </Fragment>
   );
 };

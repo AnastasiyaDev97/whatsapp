@@ -12,5 +12,5 @@ export type getChatHistoryResponseType = {
   chatId: string;
   senderId?: string;
   senderName?: string;
-  textMessage?: string;
+  textMessage: string;
 };
