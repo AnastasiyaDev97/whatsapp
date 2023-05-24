@@ -1,0 +1,44 @@
+@import '../../styles/media.scss';
+@import '../../styles/variables.scss';
+
+.modalWrapper {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+  z-index: 1001;
+  background-color: $secondaryBckgrColor;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  display: flex;
+  max-width: 320px;
+  min-height: 320px;
+  padding: 16px;
+  border: 1px solid rgba(19, 89, 120, 0.07);
+  border-radius: 2px;
+}
+
+.background {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1000;
+  background-color: $panelBckgrColor;
+}
+
+.title {
+  font-weight: 700;
+  font-size: 36px;
+  line-height: 104%;
+  margin-bottom: 28px;
+  text-align: center;
+}
+
+.text {
+  margin-bottom: 30px;
+  text-align: center;
+}

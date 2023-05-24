@@ -13,7 +13,9 @@ const messagesAPI = clientAPI.injectEndpoints({
   endpoints: (build: builderType) => ({
     sendMessage: build.mutation<sendMessageResponseType, sendMessagePayloadType>({
       query(data) {
-        const URL = new URI(`sendMessage/${process.env.REACT_APP_API_TOKEN}`);
+        const URL = new URI(
+          `waInstance${process.env.REACT_APP_ID_INSTANCE}/sendMessage/${process.env.REACT_APP_API_TOKEN}`,
+        );
 
         return {
           url: URL.toString(),
@@ -24,7 +26,9 @@ const messagesAPI = clientAPI.injectEndpoints({
     }),
     receiveNotification: build.query<receiveNotificationResponseType, void>({
       query() {
-        const URL = new URI(`receiveNotification/${process.env.REACT_APP_API_TOKEN}`);
+        const URL = new URI(
+          `waInstance${process.env.REACT_APP_ID_INSTANCE}/receiveNotification/${process.env.REACT_APP_API_TOKEN}`,
+        );
 
         return {
           url: URL.toString(),
@@ -34,7 +38,7 @@ const messagesAPI = clientAPI.injectEndpoints({
     deleteNotification: build.mutation<{ result: boolean }, { receiptId: number }>({
       query(receiptId) {
         const URL = new URI(
-          `deletenotification/${process.env.REACT_APP_API_TOKEN}/${receiptId}`,
+          `waInstance${process.env.REACT_APP_ID_INSTANCE}/deletenotification/${process.env.REACT_APP_API_TOKEN}/${receiptId}`,
         );
 
         return {

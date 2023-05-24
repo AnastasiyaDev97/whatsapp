@@ -1,5 +1,4 @@
 export { SuperButton } from 'components/SuperButton';
-export { SuperCheckbox } from 'components/SuperCheckbox';
 export { SuperInputText } from 'components/SuperInputText';
 export { UniversalInput } from 'components/UniversalInput';
 export { Layout } from './Layout';
@@ -10,3 +9,5 @@ export { InfiniteScroll } from './InfiniteScroll';
 export { Header } from './Header';
 export { NavBar } from './NavBar';
 export { Dialogs } from './Dialogs';
+export { Modal } from './Modal';
+export { LoginForm } from './LoginForm';

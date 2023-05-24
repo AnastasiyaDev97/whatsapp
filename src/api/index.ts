@@ -8,7 +8,11 @@ import type {
 
 const baseQuery = fetchBaseQuery({
   baseUrl: process.env.REACT_APP_BASE_URL,
-  credentials: 'include',
+  prepareHeaders: headers => {
+    headers.set('Content-Type', `application/json`);
+
+    return headers;
+  },
 });
 const baseQueryWithReauth: BaseQueryFn<
   string | FetchArgs,
