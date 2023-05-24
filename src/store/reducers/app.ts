@@ -5,10 +5,11 @@ import { AppStatusType, Nullable } from 'types';
 
 const initialState = {
   status: 'idle' as AppStatusType,
-  isAuth: false,
+  isAuth: true,
   errorText: null as Nullable<string>,
-  userToken: null as Nullable<string>,
-  userInstanse: null as Nullable<string>,
+  userToken:
+    '5ffc18d8d2144a3c8b480452c64c25e3c52f85eb7a334b079d' /* null  */ as Nullable<string>,
+  userInstanse: '1101824206' /* null */ as Nullable<string>,
 };
 
 type InitialStateType = typeof initialState;

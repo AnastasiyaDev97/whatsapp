@@ -11,3 +11,4 @@ export { NavBar } from './NavBar';
 export { Dialogs } from './Dialogs';
 export { Modal } from './Modal';
 export { LoginForm } from './LoginForm';
+export { PhoneInputForm } from './PhoneInputForm';
