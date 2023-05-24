@@ -1,4 +1,4 @@
-# CardsApp
+# WhatsApp
 
 <a href="https://anastasiyadev97.github.io/whatsapp/">
   <div>
