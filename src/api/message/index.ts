@@ -4,6 +4,7 @@ import { clientAPI } from '..';
 import type { builderType } from '..';
 
 import {
+  PayloadType,
   receiveNotificationResponseType,
   sendMessagePayloadType,
   sendMessageResponseType,
@@ -12,10 +13,8 @@ import {
 const messagesAPI = clientAPI.injectEndpoints({
   endpoints: (build: builderType) => ({
     sendMessage: build.mutation<sendMessageResponseType, sendMessagePayloadType>({
-      query(data) {
-        const URL = new URI(
-          `waInstance${process.env.REACT_APP_ID_INSTANCE}/sendMessage/${process.env.REACT_APP_API_TOKEN}`,
-        );
+      query({ instanse, token, ...data }) {
+        const URL = new URI(`waInstance${instanse}/sendMessage/${token}`);
 
         return {
           url: URL.toString(),
@@ -24,21 +23,22 @@ const messagesAPI = clientAPI.injectEndpoints({
         };
       },
     }),
-    receiveNotification: build.query<receiveNotificationResponseType, void>({
-      query() {
-        const URL = new URI(
-          `waInstance${process.env.REACT_APP_ID_INSTANCE}/receiveNotification/${process.env.REACT_APP_API_TOKEN}`,
-        );
+    receiveNotification: build.query<receiveNotificationResponseType, PayloadType>({
+      query({ instanse, token }) {
+        const URL = new URI(`waInstance${instanse}/receiveNotification/${token}`);
 
         return {
           url: URL.toString(),
         };
       },
     }),
-    deleteNotification: build.mutation<{ result: boolean }, { receiptId: number }>({
-      query(receiptId) {
+    deleteNotification: build.mutation<
+      { result: boolean },
+      { receiptId: number } & PayloadType
+    >({
+      query({ receiptId, instanse, token }) {
         const URL = new URI(
-          `waInstance${process.env.REACT_APP_ID_INSTANCE}/deletenotification/${process.env.REACT_APP_API_TOKEN}/${receiptId}`,
+          `waInstance${instanse}/deletenotification/${token}/${receiptId}`,
         );
 
         return {

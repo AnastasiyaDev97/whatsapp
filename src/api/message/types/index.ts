@@ -4,7 +4,7 @@ export type sendMessagePayloadType = {
   quotedMessageId?: string;
   archiveChat?: boolean;
   linkPreview?: boolean;
-};
+} & PayloadType;
 
 export type sendMessageResponseType = {
   idMessage: string;
@@ -13,4 +13,9 @@ export type sendMessageResponseType = {
 export type receiveNotificationResponseType = {
   receiptId: number;
   body: { textMessage: string; isTemplateMessage: boolean };
+};
+
+export type PayloadType = {
+  instanse: string;
+  token: string;
 };

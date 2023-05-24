@@ -3,17 +3,24 @@ import { useContext } from 'react';
 import { useFormik } from 'formik';
 
 import { useLazyGetStateInstanceQuery } from 'api/auth';
-import { useSendMessageMutation } from 'api/message';
 import { SuperButton, UniversalInput } from 'components';
 import { ModalContext } from 'components/Modal/ModalProvider';
 import { ReturnUseModalType } from 'hooks/useModal';
+import { useAppDispatch } from 'store';
+import {
+  setErrorText,
+  setIsAuth,
+  setUserInstanse,
+  setUserToken,
+} from 'store/reducers/app';
 import { ReturnComponentType } from 'types';
 
 export const LoginForm = (): ReturnComponentType => {
-  const [fetchStatus, result] = useLazyGetStateInstanceQuery();
+  const [fetchStatus] = useLazyGetStateInstanceQuery();
 
-  const { modalContent, closeModal, modal } =
-    useContext<ReturnUseModalType>(ModalContext);
+  const dispatch = useAppDispatch();
+
+  const { closeModal } = useContext<ReturnUseModalType>(ModalContext);
 
   const formik = useFormik({
     initialValues: {
@@ -34,22 +41,25 @@ export const LoginForm = (): ReturnComponentType => {
     },
     onSubmit: async values => {
       try {
-        /*  if (result.status === 200) {
-          openModal({
-            title: 'success!',
-            text: 'You have successfully subscribed to the email newsletter',
-          });
+        const result = await fetchStatus({
+          instanse: values.instanse,
+          token: values.token,
+        });
+
+        if (result?.data?.stateInstance === 'authorized') {
+          dispatch(setIsAuth(true));
+          dispatch(setUserToken({ userToken: values.token }));
+          dispatch(setUserInstanse({ userInstanse: values.instanse }));
+          closeModal();
         } else {
-          openModal({
-            text: 'Something went wrong :(',
+          setErrorText({
+            errorText: 'Something went wrong :(',
           });
-        } */
+        }
       } catch (err) {
-        /* openModal({
-          text: 'Something went wrong :(',
-        }); */
-      } finally {
-        /* formik.resetForm(); */
+        setErrorText({
+          errorText: 'Something went wrong :(',
+        });
       }
     },
   });
@@ -66,7 +76,7 @@ export const LoginForm = (): ReturnComponentType => {
         validationErr={(formik.touched.token && formik.errors.token) || ''}
         formikProps={formik.getFieldProps('token')}
       />
-      <SuperButton /* onClick={closeModal} */ type="submit">Close</SuperButton>
+      <SuperButton type="submit">Close</SuperButton>
     </form>
   );
 };
