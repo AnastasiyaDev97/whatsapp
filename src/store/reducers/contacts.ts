@@ -1,13 +1,15 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
+type ContactType = { number: string; message: 'string' };
+
 const initialState = {
-  contacts: [] as string[],
+  contacts: ['+375296163272'] as string[],
 };
 
 type InitialStateType = typeof initialState;
 
-export const appSlice = createSlice({
+export const contactsSlice = createSlice({
   name: 'contacts',
   initialState,
   reducers: {
@@ -20,5 +22,5 @@ export const appSlice = createSlice({
   },
 });
 
-export const { addContact } = appSlice.actions;
-export default appSlice.reducer;
+export const { addContact } = contactsSlice.actions;
+export default contactsSlice.reducer;

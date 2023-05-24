@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import type { TypedUseSelectorHook } from 'react-redux';
 
 import app from './reducers/app';
+import chat from './reducers/chat';
 import contacts from './reducers/contacts';
 
 import { clientAPI } from 'api';
@@ -13,6 +14,7 @@ export const store = configureStore({
     [clientAPI.reducerPath]: clientAPI.reducer,
     app,
     contacts,
+    chat,
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware().concat([clientAPI.middleware]),
