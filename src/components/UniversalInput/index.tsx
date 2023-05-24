@@ -1,10 +1,11 @@
 import { FC, memo, useState } from 'react';
 
+import type { FieldInputProps } from 'formik';
+
 import styles from './UniversalInput.module.scss';
 
-import { InputType, ReturnComponentType } from 'types';
 import { SuperInputText } from 'components/SuperInputText';
-import { FieldInputProps } from 'formik';
+import { InputType, ReturnComponentType } from 'types';
 
 type UniversalInputPropsType = {
   validationErr: string;
