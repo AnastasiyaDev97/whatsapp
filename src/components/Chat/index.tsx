@@ -1,23 +1,56 @@
-import { FC, memo, useEffect, useRef, useState } from 'react';
+import { FC, memo, useCallback, useEffect, useRef, useState, ChangeEvent } from 'react';
 
 import { Header } from './../Header/index';
 import style from './Chat.module.scss';
 
+import { useReceiveNotificationQuery, useSendMessageMutation } from 'api/message';
 import sendButtonIcon from 'assets/sendButton.svg';
+import { useAppDispatch, useAppSelector } from 'store';
 import { ReturnComponentType } from 'types';
 
 export const Chat: FC = () => {
-  /* const dispatch = useDispatch();
+  const activeChat = useAppSelector(state => state.chat.activeChat);
+  const instanse = useAppSelector(state => state.app.userInstanse);
+  const token = useAppSelector(state => state.app.userToken);
 
-  const status = useSelector((state: AppStateType) => state.chat.status);
+  const {
+    data: notification,
+    isSuccess: isSuccessReceiveNotification,
+    isFetching: isFetchingReceiveNotification,
+    isError: isErrorReceiveNotification,
+  } = useReceiveNotificationQuery(
+    {
+      instanse: instanse!,
+      token: token!,
+    },
+    /*   { pollingInterval: 10000, skip: !instanse || !token }, */
+  );
+
+  const dispatch = useAppDispatch();
+
+  const [sendMessage, { isLoading, isSuccess, isError }] = useSendMessageMutation();
+
+  const onSendMessageButtonClick = useCallback(
+    async (message: string) => {
+      if (activeChat && instanse && token) {
+        const result = await sendMessage({
+          chatId: `${activeChat}@c.us`,
+          message,
+          instanse,
+          token,
+        });
+
+        console.log(result);
+      }
+    },
+    [activeChat, instanse, token, sendMessage],
+  );
 
   useEffect(() => {
-    dispatch(startMessagesListening());
-
-    return () => {
-      dispatch(stopMessagesListening());
-    };
-  }, []); */
+    if (isSuccessReceiveNotification && notification) {
+      console.log(notification, 'not');
+    }
+  }, [isSuccessReceiveNotification, notification]);
 
   return (
     <div className={style.chatBlock}>
@@ -25,7 +58,7 @@ export const Chat: FC = () => {
         {/*  {status === 'error' && <div>Some error occured. Please refresh the page</div>} */}
         <Header />
         <Messages />
-        <AddMessageForm />
+        <AddMessageForm onSendMessageButtonClick={onSendMessageButtonClick} />
       </>
     </div>
   );
@@ -90,25 +123,33 @@ const Message: FC = memo((/* { message } */) => {
   );
 });
 
-const AddMessageForm: React.FC = (): ReturnComponentType => {
-  /*   const [message, setMessage] = useState('');
-  const dispatch = useDispatch();
+type AddMessageFormType = {
+  onSendMessageButtonClick: (message: string) => void;
+};
 
-  const status = useSelector((state: AppStateType) => state.chat.status);
+const AddMessageForm = ({
+  onSendMessageButtonClick,
+}: AddMessageFormType): ReturnComponentType => {
+  const [message, setMessage] = useState('ddd');
 
-  const sendMessageHandler = () => {
-    if (!message) {
-      return;
-    }
-    dispatch(sendMessage(message));
-    setMessage('');
-  }; */
+  const onMessageChange = (e: ChangeEvent<HTMLInputElement>): void => {
+    setMessage(e.currentTarget.value);
+  };
+
+  const onButtonClick = (): void => {
+    onSendMessageButtonClick(message);
+  };
 
   return (
     <footer className={style.footer}>
-      <input className={style.inputWrapper} placeholder="Type message" />
+      <input
+        className={style.inputWrapper}
+        placeholder="Type message"
+        onChange={onMessageChange}
+        value={message}
+      />
       <div className={style.buttonWrapper}>
-        <button className={style.sendButton}>
+        <button className={style.sendButton} onClick={onButtonClick}>
           <img src={sendButtonIcon} alt="send button" />
         </button>
       </div>
