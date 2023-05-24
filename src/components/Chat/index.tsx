@@ -1,12 +1,16 @@
 import { FC, memo, useCallback, useEffect, useRef, useState, ChangeEvent } from 'react';
 
-import { Header } from './../Header/index';
 import style from './Chat.module.scss';
 
 import { useGetChatHistoryMutation } from 'api/chatHistory';
 import { getChatHistoryResponseType } from 'api/chatHistory/types';
-import { useReceiveNotificationQuery, useSendMessageMutation } from 'api/message';
+import {
+  useDeleteNotificationMutation,
+  useReceiveNotificationQuery,
+  useSendMessageMutation,
+} from 'api/message';
 import sendButtonIcon from 'assets/sendButton.svg';
+import { Header } from 'components';
 import { useAppDispatch, useAppSelector } from 'store';
 import { setErrorText } from 'store/reducers/app';
 import { Nullable, ReturnComponentType } from 'types';
@@ -29,34 +33,24 @@ export const Chat: FC = () => {
   const {
     data: notification,
     isSuccess: isSuccessReceiveNotification,
-    isFetching: isFetchingReceiveNotification,
     isError: isErrorReceiveNotification,
   } = useReceiveNotificationQuery(
     {
       instanse: instanse!,
       token: token!,
     },
-    /*   { pollingInterval: 10000, skip: !instanse || !token }, */
+    { pollingInterval: 10000, skip: !instanse || !token },
   );
 
-  const [
-    sendMessage,
-    {
-      data: sendMessageData,
-      isLoading: isLoadingSendMessage,
-      isSuccess: isSuccessSendMessage,
-      isError: isErrorSendMessage,
-    },
-  ] = useSendMessageMutation();
+  const [deleteNotification, { isError: isErrordeleteNotification }] =
+    useDeleteNotificationMutation();
+
+  const [sendMessage, { data: sendMessageData, isError: isErrorSendMessage }] =
+    useSendMessageMutation();
 
   const [
     getChatHistory,
-    {
-      data: chatHistory,
-      isLoading: isLoadingChatHistory,
-      isSuccess: isSuccessChatHistory,
-      isError: isErrorChatHistory,
-    },
+    { data: chatHistory, isSuccess: isSuccessChatHistory, isError: isErrorChatHistory },
   ] = useGetChatHistoryMutation();
 
   const onSendMessageButtonClick = useCallback(
@@ -83,7 +77,15 @@ export const Chat: FC = () => {
         getChatHistory({ chatId, instanse, token });
       }, 1000);
     }
-  }, [sendMessageData, chatId, instanse, token, getChatHistory]);
+  }, [
+    sendMessageData,
+    chatId,
+    instanse,
+    token,
+    getChatHistory,
+    isSuccessReceiveNotification,
+    notification,
+  ]);
 
   useEffect(() => {
     if (messages.length === 0 && activeChat && instanse && token) {
@@ -92,16 +94,42 @@ export const Chat: FC = () => {
   }, [messages, activeChat, instanse, token, chatId, getChatHistory]);
 
   useEffect(() => {
-    if (isSuccessReceiveNotification && notification) {
-      console.log(notification, 'not');
+    if (isSuccessReceiveNotification && notification && instanse && token) {
+      getChatHistory({ chatId, instanse, token });
+      deleteNotification({ receiptId: notification?.receiptId, instanse, token });
     }
-  }, [isSuccessReceiveNotification, notification]);
+  }, [
+    isSuccessReceiveNotification,
+    notification,
+    instanse,
+    token,
+    deleteNotification,
+    chatId,
+    getChatHistory,
+  ]);
 
   useEffect(() => {
     if (isSuccessChatHistory && chatHistory) {
       setMessages([...chatHistory].reverse());
     }
   }, [chatHistory, isSuccessChatHistory]);
+
+  useEffect(() => {
+    if (
+      isErrorReceiveNotification &&
+      isErrordeleteNotification &&
+      isErrorSendMessage &&
+      isErrorChatHistory
+    ) {
+      dispatch(setErrorText({ errorText: 'Something went wrong' }));
+    }
+  }, [
+    isErrorReceiveNotification,
+    isErrordeleteNotification,
+    isErrorSendMessage,
+    isErrorChatHistory,
+    dispatch,
+  ]);
 
   return (
     <div className={style.chatBlock}>
@@ -125,9 +153,7 @@ const Messages = memo(({ messages }: MessagesPropsType): ReturnComponentType => 
   const commonDateOptions = { weekday: 'short', day: 'numeric', month: 'short' } as const;
   const timeOptions = { hour: 'numeric', minute: 'numeric' } as const;
 
-  const scrollHandler = (
-    e: React.UIEvent<HTMLDivElement, UIEvent> /* : UIEvent<HTMLDivElement, UIEvent> */,
-  ): void => {
+  const scrollHandler = (e: React.UIEvent<HTMLDivElement, UIEvent>): void => {
     const element = e.currentTarget;
 
     if (Math.abs(element.scrollHeight - element.scrollTop - element.clientHeight) < 300) {

@@ -4,7 +4,7 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 type ContactType = { number: string; message: 'string' };
 
 const initialState = {
-  contacts: ['905347990557'] as string[],
+  contacts: ['375447201120'] as string[],
 };
 
 type InitialStateType = typeof initialState;

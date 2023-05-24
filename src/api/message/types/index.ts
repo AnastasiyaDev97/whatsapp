@@ -12,7 +12,12 @@ export type sendMessageResponseType = {
 
 export type receiveNotificationResponseType = {
   receiptId: number;
-  body: { textMessage: string; isTemplateMessage: boolean };
+  body: {
+    textMessage: string;
+    isTemplateMessage: boolean;
+    timestamp: number;
+    messageData: { extendedTextMessageData: { text: string } };
+  };
 };
 
 export type PayloadType = {
